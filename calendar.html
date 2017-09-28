@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		.wrap{
+			margin: 0 auto;
+			width: 350px;
+			font-size: 0;
+			border-left: 1px solid #000;
+			border-top: 1px solid #000;
+		}
+		.wrap span{
+			box-sizing: border-box;
+			display: inline-block;
+			width: 50px;
+			border-right: 1px solid #000;
+			border-bottom: 1px solid #000;
+			line-height: 40px;
+			font-size: 16px;
+			text-align: center;
+		}
+		.date-title span{
+			font-size: 20px;
+			line-height: 50px;
+			width: 100%;
+		}
+		.date-body{
+			margin: 0 auto;
+			width: 350px;
+		}
+
+		.today{
+			background: #0ff;
+		}
+		.other-month{
+			color: #ccc;
+		}
+		button,input{
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+<body>
+
+	<div align="center">
+		<button id="pre-month">上个月</button>
+		<button id="next-month">下个月</button>
+		<br>
+		<button id="pre-year">上一年</button>
+		<button id="next-year">下一年</button>
+		<br>
+		<button id="now">回到本月</button>
+		<br>
+		年：<input type="text" id="cus-year">
+		月：<input type="text" id="cus-month">
+		<button id="submit">提交</button>
+	</div>
+	<div class="wrap">
+		<div class="date-title">
+			<span>
+				今天是xxxx年xx月
+			</span>
+		</div>
+		<div>
+			<span>日</span>
+			<span>一</span>
+			<span>二</span>
+			<span>三</span>
+			<span>四</span>
+			<span>五</span>
+			<span>六</span>
+		</div>
+		<div class="date-body"></div>
+	</div>
+	<script src="calendar.js"></script>
+	<script>
+		var dateTitle = document.querySelector('.date-title span');
+		var dateBody = document.querySelector('.date-body');
+		var pm = document.querySelector('#pre-month');
+		var nm = document.querySelector('#next-month');
+		var py = document.querySelector('#pre-year');
+		var ny = document.querySelector('#next-year');
+
+		var now = document.querySelector('#now');
+
+		var cy = document.querySelector('#cus-year');
+		var cm = document.querySelector('#cus-month');
+		var sub = document.querySelector('#submit');
+		var calendar = new Calendar();
+
+		// 初始化
+		function init(){
+			var data = calendar.getData();
+			fn(data);
+		}
+		
+		init();
+
+		pm.onclick = function(){
+			calendar.preMonth();
+			init();
+		}
+
+		nm.onclick = function(){
+			calendar.nextMonth();
+			init();
+		}
+
+		py.onclick = function(){
+			calendar.preYear();
+			init();
+		}
+
+		ny.onclick = function(){
+			calendar.nextYear();
+			init();
+		}
+
+		now.onclick = function (){
+			data = calendar.thisMonth();
+			init();
+		}
+
+		sub.onclick = function(){
+			var v1 = cy.value;
+			var v2 = cm.value;
+			if(v1 && v2){
+				calendar.customDate(v1,v2);
+				init();
+			}
+		}
+
+		function fn(data){
+			dateTitle.innerHTML = calendar.year+'年'+(calendar.month+1)+'月';
+			dateBody.innerHTML = '';
+			for(var i=0; i<data.length; i++){
+				var span = document.createElement('span');
+				if(data[i].isToday){
+					span.classList.add('today');
+				}
+				if(!data[i].isThisMonth){
+					span.classList.add('other-month');
+				}
+				span.innerHTML = data[i].date;
+				dateBody.appendChild(span);
+			}
+		}
+	</script>
+</body>
+</html>
